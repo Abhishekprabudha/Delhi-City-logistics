@@ -22,7 +22,7 @@ window.addEventListener("error",(e)=>debug(`Error: ${e.message||e}`));
 
 /* -------------------- config -------------------- */
 const STYLE_URL="style.json";
-const MAP_INIT={center:[77.2190,28.6250],zoom:10.2,minZoom:8,maxZoom:15};
+const MAP_INIT={center:[77.2190,28.6250],zoom:10.8,minZoom:8,maxZoom:15};
 const WAREHOUSE_ICON_SRC="warehouse_iso.png";
 const HUB_ID="H_ITO";
 const CITY_HUB_ID="H_DWK";
@@ -213,6 +213,43 @@ function resizeCanvas(){
 }
 window.addEventListener("resize",resizeCanvas);
 
+
+/* -------------------- Delhi context map overlay -------------------- */
+const DELHI_CONTEXT = {
+  boundary: [[77.057,28.489],[77.083,28.545],[77.073,28.616],[77.113,28.705],[77.145,28.781],[77.211,28.848],[77.274,28.821],[77.323,28.733],[77.336,28.638],[77.323,28.563],[77.277,28.507],[77.190,28.474],[77.057,28.489]],
+  yamuna: [[77.206,28.842],[77.220,28.783],[77.232,28.721],[77.240,28.676],[77.252,28.640],[77.263,28.608],[77.279,28.565],[77.296,28.520]],
+  arterials: [
+    {name:"Outer Ring Road", coords:[[77.091,28.705],[77.142,28.719],[77.205,28.705],[77.274,28.671],[77.315,28.629],[77.274,28.535],[77.180,28.535],[77.100,28.558],[77.091,28.705]]},
+    {name:"Ring Road", coords:[[77.147,28.657],[77.189,28.666],[77.236,28.648],[77.268,28.612],[77.251,28.566],[77.206,28.552],[77.160,28.572],[77.141,28.616],[77.147,28.657]]},
+    {name:"NH 44 / GT Karnal", coords:[[77.170,28.852],[77.190,28.780],[77.199,28.704],[77.209,28.650]]},
+    {name:"NH 48 / Airport", coords:[[77.216,28.632],[77.165,28.595],[77.120,28.555],[77.085,28.498]]},
+    {name:"DND / Noida Link", coords:[[77.236,28.612],[77.278,28.604],[77.333,28.613],[77.367,28.626]]},
+    {name:"Mathura Road", coords:[[77.234,28.636],[77.249,28.594],[77.272,28.536]]}
+  ],
+  labels: [
+    {name:"Delhi", lon:77.219, lat:28.645},
+    {name:"New Delhi", lon:77.209, lat:28.613},
+    {name:"Yamuna River", lon:77.268, lat:28.611},
+    {name:"Gurugram", lon:77.089, lat:28.495},
+    {name:"Noida", lon:77.333, lat:28.590},
+    {name:"Narela", lon:77.092, lat:28.853},
+    {name:"Dwarka", lon:77.058, lat:28.552}
+  ]
+};
+function addDelhiContextLayers(){
+  if(map.getSource("delhi-boundary")) return;
+  map.addSource("delhi-boundary",{type:"geojson",data:{type:"Feature",properties:{name:"Delhi NCR operating area"},geometry:{type:"Polygon",coordinates:[DELHI_CONTEXT.boundary]}}});
+  map.addSource("yamuna",{type:"geojson",data:{type:"Feature",properties:{name:"Yamuna River"},geometry:{type:"LineString",coordinates:DELHI_CONTEXT.yamuna}}});
+  map.addSource("arterials",{type:"geojson",data:{type:"FeatureCollection",features:DELHI_CONTEXT.arterials.map(r=>({type:"Feature",properties:{name:r.name},geometry:{type:"LineString",coordinates:r.coords}}))}});
+  map.addSource("place-labels",{type:"geojson",data:{type:"FeatureCollection",features:DELHI_CONTEXT.labels.map(l=>({type:"Feature",properties:{name:l.name},geometry:{type:"Point",coordinates:[l.lon,l.lat]}}))}});
+  map.addLayer({id:"delhi-fill",type:"fill",source:"delhi-boundary",paint:{"fill-color":"#fef3c7","fill-opacity":0.16}});
+  map.addLayer({id:"delhi-outline",type:"line",source:"delhi-boundary",paint:{"line-color":"#92400e","line-opacity":0.72,"line-width":2}});
+  map.addLayer({id:"yamuna-line",type:"line",source:"yamuna",paint:{"line-color":"#38bdf8","line-opacity":0.68,"line-width":5},layout:{"line-cap":"round","line-join":"round"}});
+  map.addLayer({id:"arterial-halo",type:"line",source:"arterials",paint:{"line-color":"#ffffff","line-opacity":0.85,"line-width":5},layout:{"line-cap":"round","line-join":"round"}});
+  map.addLayer({id:"arterial-line",type:"line",source:"arterials",paint:{"line-color":"#f59e0b","line-opacity":0.72,"line-width":2.2},layout:{"line-cap":"round","line-join":"round"}});
+  map.addLayer({id:"place-labels",type:"symbol",source:"place-labels",layout:{"text-field":["get","name"],"text-font":["Open Sans Regular"],"text-size":["interpolate",["linear"],["zoom"],8,11,12,16],"text-offset":[0,0.7]},paint:{"text-color":"#334155","text-halo-color":"#ffffff","text-halo-width":1.5}});
+}
+
 /* -------------------- base network + highlight layers -------------------- */
 let SHOW_HUB=false;
 let SHOW_CITY_ADD=false;
@@ -225,12 +262,12 @@ function ensureRoadLayers(){
 
   if(!map.getLayer("routes-halo")){
     map.addLayer({id:"routes-halo",type:"line",source:"routes",
-      paint:{"line-color":"#9fb4ff","line-opacity":0.24,"line-width":8.5},
+      paint:{"line-color":"#1d4ed8","line-opacity":0.26,"line-width":9.5},
       layout:{"line-cap":"round","line-join":"round"}});
   }
   if(!map.getLayer("routes-base")){
     map.addLayer({id:"routes-base",type:"line",source:"routes",
-      paint:{"line-color":"#ffffff","line-opacity":0.92,"line-width":3.2},
+      paint:{"line-color":"#0f172a","line-opacity":0.72,"line-width":4.2},
       layout:{"line-cap":"round","line-join":"round"}});
   }
 
@@ -270,8 +307,9 @@ const sizeByZoom=z=>Math.max(WH_MIN,Math.min(WH_MAX, WH_BASE*(0.9+(z-10)*0.12)))
 function drawLabelBox(text, p, z){
   const S=sizeByZoom(z);
   const label=text, pad=6, h=17, w=ctx.measureText(label).width+pad*2, py=p.y+S/2+13;
-  ctx.fillStyle="rgba(10,10,12,.80)"; ctx.fillRect(p.x-w/2,py-h/2,w,h);
-  ctx.fillStyle="#e8eef2"; ctx.textBaseline="middle"; ctx.fillText(label,p.x-w/2+pad,py);
+  ctx.fillStyle="rgba(10,10,12,.86)"; ctx.fillRect(p.x-w/2,py-h/2,w,h);
+  ctx.strokeStyle="rgba(255,255,255,.72)"; ctx.lineWidth=1; ctx.strokeRect(p.x-w/2,py-h/2,w,h);
+  ctx.fillStyle="#f8fafc"; ctx.textBaseline="middle"; ctx.fillText(label,p.x-w/2+pad,py);
 }
 function drawWarehouses(){
   if(!ctx) return; const z=map.getZoom();
@@ -666,7 +704,7 @@ function fitToBoundsOfAnchors(ids){
 /* -------------------- boot -------------------- */
 const mapReady=new Promise(res=>map.on("load",res));
 (async function start(){
-  await mapReady; ensureCanvas(); ensureRoadLayers();
+  await mapReady; addDelhiContextLayers(); ensureCanvas(); ensureRoadLayers();
   const ui=document.getElementById("ui")||document.body;
   const btnBefore=document.getElementById("btnBefore");
   const btnAfter=document.getElementById("btnAfter");
@@ -691,7 +729,7 @@ const mapReady=new Promise(res=>map.on("load",res));
   beforeStats = computeStatsFromScenario(SCN_BEFORE); afterStats = computeStatsFromScenario(SCN_AFTER); hubStats = SCN_HUB ? computeStatsFromScenario(SCN_HUB) : null; cityBaseStats = SCN_CITY_BASE ? computeStatsFromScenario(SCN_CITY_BASE) : null; cityAfterStats = SCN_CITY_AFTER ? computeStatsFromScenario(SCN_CITY_AFTER) : null; Object.assign(baseStats, beforeStats);
   activateTrucksFromScenario(SCN_BEFORE);
   const b=new maplibregl.LngLatBounds(); Object.values(CITY).forEach(c=>b.extend([c.lon,c.lat]));
-  map.fitBounds(b,{padding:{top:70,left:70,right:330,bottom:70},duration:800,maxZoom:10.9});
+  map.fitBounds(b,{padding:{top:90,left:90,right:360,bottom:90},duration:800,maxZoom:11.35});
   renderStatsTable(beforeStats);
   Narrator.sayLinesTwice([
     "Delhi City Logistics Twin loaded. Use Disrupt, Correct, Normal, Hub Addition, or City Addition to operate the simulation.",
