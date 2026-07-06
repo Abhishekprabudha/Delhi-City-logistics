@@ -242,11 +242,10 @@ function addDelhiContextLayers(){
   map.addSource("yamuna",{type:"geojson",data:{type:"Feature",properties:{name:"Yamuna River"},geometry:{type:"LineString",coordinates:DELHI_CONTEXT.yamuna}}});
   map.addSource("arterials",{type:"geojson",data:{type:"FeatureCollection",features:DELHI_CONTEXT.arterials.map(r=>({type:"Feature",properties:{name:r.name},geometry:{type:"LineString",coordinates:r.coords}}))}});
   map.addSource("place-labels",{type:"geojson",data:{type:"FeatureCollection",features:DELHI_CONTEXT.labels.map(l=>({type:"Feature",properties:{name:l.name},geometry:{type:"Point",coordinates:[l.lon,l.lat]}}))}});
-  map.addLayer({id:"delhi-fill",type:"fill",source:"delhi-boundary",paint:{"fill-color":"#fef3c7","fill-opacity":0.16}});
-  map.addLayer({id:"delhi-outline",type:"line",source:"delhi-boundary",paint:{"line-color":"#92400e","line-opacity":0.72,"line-width":2}});
-  map.addLayer({id:"yamuna-line",type:"line",source:"yamuna",paint:{"line-color":"#38bdf8","line-opacity":0.68,"line-width":5},layout:{"line-cap":"round","line-join":"round"}});
-  map.addLayer({id:"arterial-halo",type:"line",source:"arterials",paint:{"line-color":"#ffffff","line-opacity":0.85,"line-width":5},layout:{"line-cap":"round","line-join":"round"}});
-  map.addLayer({id:"arterial-line",type:"line",source:"arterials",paint:{"line-color":"#f59e0b","line-opacity":0.72,"line-width":2.2},layout:{"line-cap":"round","line-join":"round"}});
+  map.addLayer({id:"delhi-fill",type:"fill",source:"delhi-boundary",paint:{"fill-color":"#fef3c7","fill-opacity":0.10}});
+  // Keep the context sources available for labels and future use, but do not draw
+  // boundary, river, or arterial line overlays. The moving-truck routes below are
+  // now the only custom linework on top of the satellite basemap.
   map.addLayer({id:"place-labels",type:"symbol",source:"place-labels",layout:{"text-field":["get","name"],"text-font":["Open Sans Regular"],"text-size":["interpolate",["linear"],["zoom"],8,11,12,16],"text-offset":[0,0.7]},paint:{"text-color":"#334155","text-halo-color":"#ffffff","text-halo-width":1.5}});
 }
 
@@ -256,7 +255,7 @@ let SHOW_CITY_ADD=false;
 let SHOW_CITY_HUB=false;
 
 function ensureRoadLayers(){
-  const net=networkGeoJSON(SHOW_HUB);
+  const net=activeTruckRoutesGeoJSON();
   if(!map.getSource("routes")) map.addSource("routes",{type:"geojson",data:net});
   else map.getSource("routes").setData(net);
 
@@ -286,9 +285,22 @@ function ensureRoadLayers(){
   }
   try { map.moveLayer("fix-green"); } catch(e) {}
 }
+function activeTruckRoutesGeoJSON(){
+  const seen=new Set();
+  const features=[];
+  for(const T of trucks){
+    if(!T.latlon || T.latlon.length<2) continue;
+    const coords=toLonLat(T.latlon);
+    const id=coords.map(p=>`${p[0].toFixed(4)},${p[1].toFixed(4)}`).join("|");
+    if(seen.has(id)) continue;
+    seen.add(id);
+    features.push({type:"Feature",properties:{id:T.id},geometry:{type:"LineString",coordinates:coords}});
+  }
+  return {type:"FeatureCollection",features};
+}
 function refreshRoadNetwork(){
   const src=map.getSource("routes");
-  if(src) src.setData(networkGeoJSON(SHOW_HUB));
+  if(src) src.setData(activeTruckRoutesGeoJSON());
 }
 function featureForRoute(ids){
   return {type:"Feature",properties:{id:ids.join("-")},geometry:{type:"LineString",coordinates:toLonLat(expandIDsToLatLon(ids))}};
@@ -572,19 +584,22 @@ function odMatch(ids,o,d){ const a=ids[0], b=ids[ids.length-1]; return (a===o&&b
 function setTruckPath(T,latlon,toMid=false){ if(!latlon||latlon.length<2) return; T.latlon=latlon; T.seg=0; T.dir=1; T.t=toMid?0.5:0.0; }
 function pauseAllOnRoute(step){
   const ids=step.route; const latlon=expandIDsToLatLon(ids);
+  let changed=false;
   for(const T of trucks){
     const baseIDs=defaultPathIDs(T.origin,T.dest);
     if(odMatch(baseIDs, ids[0], ids[1])){
       if(!T.savedPath) T.savedPath={ latlon:[...T.latlon], seg:T.seg, t:T.t, dir:T.dir };
-      setTruckPath(T, latlon, true); T.paused=true;
+      setTruckPath(T, latlon, true); T.paused=true; changed=true;
     }
   }
+  if(changed) refreshRoadNetwork();
 }
 function reroutePaused(step){
   const full=step.reroute?.length ? expandIDsToLatLon(step.reroute.flat()) : null;
   if(!full) return 0;
   let released=0;
   for(const T of trucks){ if(!T.paused) continue; setTruckPath(T, full, false); T.paused=false; T.savedPath=null; released++; }
+  refreshRoadNetwork();
   return released;
 }
 
@@ -594,7 +609,11 @@ function setAlert(ids){ setSourceFeatures("alert",[featureForRoute(ids)]); }
 function clearAlert(){ setSourceFeatures("alert",[]); }
 function setFix(pairs){ setSourceFeatures("fix",(pairs||[]).map(pair=>featureForRoute(pair))); }
 function clearFix(){ setSourceFeatures("fix",[]); }
-function activateTrucksFromScenario(scn){ trucks.length=0; truckNumberById.clear(); (scn.trucks||[]).forEach((t,i)=>spawnTruck(t,i)); }
+function activateTrucksFromScenario(scn){
+  trucks.length=0; truckNumberById.clear();
+  (scn.trucks||[]).forEach((t,i)=>spawnTruck(t,i));
+  refreshRoadNetwork();
+}
 function prefixTruckIds(trucksList, prefix){ return (trucksList||[]).map((t, i)=>({...t, id: `${prefix}${t.id || i}`})); }
 function buildCombinedScenario(baseScn, overlayScn, overlayPrefix){
   const base = baseScn || {warehouses:[], trucks:[], policies:{}};
