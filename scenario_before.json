@@ -1,0 +1,325 @@
+{
+  "version": "Delhi City Logistics Twin 1.0",
+  "description": "Synthetic Delhi NCR intra-city logistics operations with seven operating nodes, live trucks, disruptions, hub addition, and city addition scenarios.",
+  "policies": {
+    "capacity_units": 10,
+    "default_speed_kmph": 28,
+    "use_hub": false
+  },
+  "warehouses": [
+    {
+      "id": "WH1",
+      "location": "West Gateway DC / Kapashera",
+      "inventory": 640
+    },
+    {
+      "id": "WH2",
+      "location": "North Fulfilment Hub / Narela",
+      "inventory": 520
+    },
+    {
+      "id": "WH3",
+      "location": "East Cross-Dock / Ghazipur",
+      "inventory": 575
+    },
+    {
+      "id": "WH4",
+      "location": "South Micro-Hub / Okhla",
+      "inventory": 465
+    },
+    {
+      "id": "WH5",
+      "location": "Central Sort Centre / Connaught Place",
+      "inventory": 700
+    },
+    {
+      "id": "WH6",
+      "location": "Noida Last-Mile Pod / Sector 62",
+      "inventory": 390
+    },
+    {
+      "id": "WH7",
+      "location": "Gurugram Pod / Cyber City",
+      "inventory": 420
+    }
+  ],
+  "trucks": [
+    {
+      "id": "D-T01",
+      "origin": "WH1",
+      "destination": "WH5",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 6,
+      "speed_kmph": 28,
+      "od": "Kapashera-CP"
+    },
+    {
+      "id": "D-T02",
+      "origin": "WH5",
+      "destination": "WH3",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 5,
+      "speed_kmph": 26,
+      "od": "CP-Ghazipur"
+    },
+    {
+      "id": "D-T03",
+      "origin": "WH2",
+      "destination": "WH3",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 5,
+      "speed_kmph": 30,
+      "od": "Narela-Ghazipur"
+    },
+    {
+      "id": "D-T04",
+      "origin": "WH4",
+      "destination": "WH6",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 28,
+      "od": "Okhla-Noida"
+    },
+    {
+      "id": "D-T05",
+      "origin": "WH1",
+      "destination": "WH7",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 6,
+      "speed_kmph": 24,
+      "od": "Kapashera-Gurugram"
+    },
+    {
+      "id": "D-T06",
+      "origin": "WH2",
+      "destination": "WH5",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 29,
+      "od": "Narela-CP"
+    },
+    {
+      "id": "D-T07",
+      "origin": "WH5",
+      "destination": "WH4",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 25,
+      "od": "CP-Okhla"
+    },
+    {
+      "id": "D-T08",
+      "origin": "WH3",
+      "destination": "WH6",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 5,
+      "speed_kmph": 24,
+      "od": "Ghazipur-Noida"
+    },
+    {
+      "id": "D-T09",
+      "origin": "WH4",
+      "destination": "WH7",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 27,
+      "od": "Okhla-Gurugram"
+    },
+    {
+      "id": "D-T10",
+      "origin": "WH1",
+      "destination": "WH2",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 5,
+      "speed_kmph": 30,
+      "od": "Kapashera-Narela"
+    },
+    {
+      "id": "D-T11",
+      "origin": "WH3",
+      "destination": "WH4",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 3,
+      "speed_kmph": 26,
+      "od": "Ghazipur-Okhla"
+    },
+    {
+      "id": "D-T12",
+      "origin": "WH5",
+      "destination": "WH6",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 5,
+      "speed_kmph": 26,
+      "od": "CP-Noida"
+    },
+    {
+      "id": "D-T13",
+      "origin": "WH7",
+      "destination": "WH5",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 25,
+      "od": "Gurugram-CP"
+    },
+    {
+      "id": "D-T14",
+      "origin": "WH6",
+      "destination": "WH3",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 3,
+      "speed_kmph": 24,
+      "od": "Noida-Ghazipur"
+    },
+    {
+      "id": "D-T15",
+      "origin": "WH2",
+      "destination": "WH1",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 29,
+      "od": "Narela-Kapashera"
+    },
+    {
+      "id": "D-T16",
+      "origin": "WH4",
+      "destination": "WH5",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 25,
+      "od": "Okhla-CP"
+    },
+    {
+      "id": "D-T17",
+      "origin": "WH5",
+      "destination": "WH7",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 25,
+      "od": "CP-Gurugram"
+    },
+    {
+      "id": "D-T18",
+      "origin": "WH1",
+      "destination": "WH4",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 5,
+      "speed_kmph": 27,
+      "od": "Kapashera-Okhla"
+    }
+  ],
+  "commentary": {
+    "static": "Normal Delhi operations: seven city nodes connected through core corridors across West, North, East, South, Central Delhi, Noida and Gurugram."
+  },
+  "city": {
+    "baseline": {
+      "policies": {
+        "capacity_units": 10,
+        "default_speed_kmph": 24,
+        "use_hub": false
+      },
+      "warehouses": [
+        {
+          "id": "Z_DWK",
+          "location": "Dwarka Sector 21",
+          "inventory": 135
+        },
+        {
+          "id": "Z_PLM",
+          "location": "Palam / Aerocity",
+          "inventory": 125
+        },
+        {
+          "id": "Z_JNP",
+          "location": "Janakpuri",
+          "inventory": 140
+        },
+        {
+          "id": "Z_RHN",
+          "location": "Rohini Sector 18",
+          "inventory": 130
+        },
+        {
+          "id": "Z_CHN",
+          "location": "Chandni Chowk",
+          "inventory": 150
+        },
+        {
+          "id": "Z_VKJ",
+          "location": "Vasant Kunj",
+          "inventory": 120
+        }
+      ],
+      "trucks": [
+        {
+          "id": "CB1",
+          "origin": "WH5",
+          "destination": "Z_DWK",
+          "units": 4,
+          "speed_kmph": 22,
+          "od": "CP-Dwarka"
+        },
+        {
+          "id": "CB2",
+          "origin": "WH5",
+          "destination": "Z_PLM",
+          "units": 4,
+          "speed_kmph": 22,
+          "od": "CP-Palam"
+        },
+        {
+          "id": "CB3",
+          "origin": "WH5",
+          "destination": "Z_JNP",
+          "units": 5,
+          "speed_kmph": 24,
+          "od": "CP-Janakpuri"
+        },
+        {
+          "id": "CB4",
+          "origin": "WH5",
+          "destination": "Z_RHN",
+          "units": 4,
+          "speed_kmph": 25,
+          "od": "CP-Rohini"
+        },
+        {
+          "id": "CB5",
+          "origin": "WH5",
+          "destination": "Z_CHN",
+          "units": 5,
+          "speed_kmph": 20,
+          "od": "CP-Chandni"
+        },
+        {
+          "id": "CB6",
+          "origin": "WH5",
+          "destination": "Z_VKJ",
+          "units": 4,
+          "speed_kmph": 23,
+          "od": "CP-VasantKunj"
+        }
+      ],
+      "commentary": {
+        "static": "City addition baseline: new Delhi micro-zones are served directly from the Central Sort Centre."
+      }
+    }
+  }
+}

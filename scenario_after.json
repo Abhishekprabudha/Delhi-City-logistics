@@ -1,0 +1,454 @@
+{
+  "version": "Delhi City Logistics Twin 1.0",
+  "description": "Corrected Delhi NCR intra-city logistics operations with rerouted trucks and proposed hubs.",
+  "policies": {
+    "capacity_units": 10,
+    "default_speed_kmph": 28,
+    "use_hub": false
+  },
+  "warehouses": [
+    {
+      "id": "WH1",
+      "location": "West Gateway DC / Kapashera",
+      "inventory": 612
+    },
+    {
+      "id": "WH2",
+      "location": "North Fulfilment Hub / Narela",
+      "inventory": 505
+    },
+    {
+      "id": "WH3",
+      "location": "East Cross-Dock / Ghazipur",
+      "inventory": 590
+    },
+    {
+      "id": "WH4",
+      "location": "South Micro-Hub / Okhla",
+      "inventory": 482
+    },
+    {
+      "id": "WH5",
+      "location": "Central Sort Centre / Connaught Place",
+      "inventory": 675
+    },
+    {
+      "id": "WH6",
+      "location": "Noida Last-Mile Pod / Sector 62",
+      "inventory": 405
+    },
+    {
+      "id": "WH7",
+      "location": "Gurugram Pod / Cyber City",
+      "inventory": 435
+    }
+  ],
+  "trucks": [
+    {
+      "id": "R-T01",
+      "origin": "WH2",
+      "destination": "WH5",
+      "status": "Rerouted",
+      "delay_hours": 0.4,
+      "units": 5,
+      "speed_kmph": 27,
+      "od": "Narela-CP"
+    },
+    {
+      "id": "R-T02",
+      "origin": "WH5",
+      "destination": "WH3",
+      "status": "Rerouted",
+      "delay_hours": 0.3,
+      "units": 5,
+      "speed_kmph": 26,
+      "od": "CP-Ghazipur"
+    },
+    {
+      "id": "R-T03",
+      "origin": "WH1",
+      "destination": "WH4",
+      "status": "Rerouted",
+      "delay_hours": 0.5,
+      "units": 6,
+      "speed_kmph": 26,
+      "od": "Kapashera-Okhla"
+    },
+    {
+      "id": "R-T04",
+      "origin": "WH4",
+      "destination": "WH5",
+      "status": "Rerouted",
+      "delay_hours": 0.2,
+      "units": 6,
+      "speed_kmph": 25,
+      "od": "Okhla-CP"
+    },
+    {
+      "id": "R-T05",
+      "origin": "WH3",
+      "destination": "WH4",
+      "status": "Rerouted",
+      "delay_hours": 0.4,
+      "units": 5,
+      "speed_kmph": 25,
+      "od": "Ghazipur-Okhla"
+    },
+    {
+      "id": "R-T06",
+      "origin": "WH4",
+      "destination": "WH6",
+      "status": "Rerouted",
+      "delay_hours": 0.2,
+      "units": 5,
+      "speed_kmph": 26,
+      "od": "Okhla-Noida"
+    },
+    {
+      "id": "R-T07",
+      "origin": "WH1",
+      "destination": "WH2",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 5,
+      "speed_kmph": 30,
+      "od": "Kapashera-Narela"
+    },
+    {
+      "id": "R-T08",
+      "origin": "WH5",
+      "destination": "WH6",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 5,
+      "speed_kmph": 26,
+      "od": "CP-Noida"
+    },
+    {
+      "id": "R-T09",
+      "origin": "WH4",
+      "destination": "WH7",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 27,
+      "od": "Okhla-Gurugram"
+    },
+    {
+      "id": "R-T10",
+      "origin": "WH7",
+      "destination": "WH5",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 25,
+      "od": "Gurugram-CP"
+    },
+    {
+      "id": "R-T11",
+      "origin": "WH2",
+      "destination": "WH1",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 29,
+      "od": "Narela-Kapashera"
+    },
+    {
+      "id": "R-T12",
+      "origin": "WH3",
+      "destination": "WH6",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 3,
+      "speed_kmph": 24,
+      "od": "Ghazipur-Noida"
+    },
+    {
+      "id": "R-T13",
+      "origin": "WH5",
+      "destination": "WH7",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 25,
+      "od": "CP-Gurugram"
+    },
+    {
+      "id": "R-T14",
+      "origin": "WH1",
+      "destination": "WH7",
+      "status": "Rerouted",
+      "delay_hours": 0.5,
+      "units": 6,
+      "speed_kmph": 24,
+      "od": "Kapashera-Gurugram"
+    },
+    {
+      "id": "R-T15",
+      "origin": "WH4",
+      "destination": "WH5",
+      "status": "On-Time",
+      "delay_hours": 0,
+      "units": 4,
+      "speed_kmph": 25,
+      "od": "Okhla-CP"
+    }
+  ],
+  "commentary": {
+    "static": "After correction: Delhi disruptions are absorbed with controlled detours through alternate city corridors and balancing nodes."
+  },
+  "hub": {
+    "policies": {
+      "use_hub": true,
+      "hubs": [
+        "H_ITO"
+      ],
+      "hub_dwell_min": 18,
+      "consolidation_window_min": 12,
+      "capacity_units": 10,
+      "default_speed_kmph": 26
+    },
+    "warehouses": [
+      {
+        "id": "WH1",
+        "location": "West Gateway DC / Kapashera",
+        "inventory": 630
+      },
+      {
+        "id": "WH2",
+        "location": "North Fulfilment Hub / Narela",
+        "inventory": 518
+      },
+      {
+        "id": "WH3",
+        "location": "East Cross-Dock / Ghazipur",
+        "inventory": 585
+      },
+      {
+        "id": "WH4",
+        "location": "South Micro-Hub / Okhla",
+        "inventory": 475
+      },
+      {
+        "id": "WH5",
+        "location": "Central Sort Centre / Connaught Place",
+        "inventory": 690
+      },
+      {
+        "id": "WH6",
+        "location": "Noida Last-Mile Pod / Sector 62",
+        "inventory": 398
+      },
+      {
+        "id": "WH7",
+        "location": "Gurugram Pod / Cyber City",
+        "inventory": 426
+      },
+      {
+        "id": "H_ITO",
+        "location": "ITO / Pragati Maidan Urban Consolidation Hub",
+        "inventory": 180,
+        "type": "hub"
+      }
+    ],
+    "trucks": [
+      {
+        "id": "H-T01",
+        "origin": "WH1",
+        "destination": "H_ITO",
+        "units": 9,
+        "speed_kmph": 26,
+        "od": "Kapashera-Hub"
+      },
+      {
+        "id": "H-T02",
+        "origin": "H_ITO",
+        "destination": "WH5",
+        "units": 8,
+        "speed_kmph": 24,
+        "od": "Hub-CP"
+      },
+      {
+        "id": "H-T03",
+        "origin": "WH2",
+        "destination": "H_ITO",
+        "units": 8,
+        "speed_kmph": 27,
+        "od": "Narela-Hub"
+      },
+      {
+        "id": "H-T04",
+        "origin": "H_ITO",
+        "destination": "WH3",
+        "units": 9,
+        "speed_kmph": 25,
+        "od": "Hub-Ghazipur"
+      },
+      {
+        "id": "H-T05",
+        "origin": "WH4",
+        "destination": "H_ITO",
+        "units": 8,
+        "speed_kmph": 24,
+        "od": "Okhla-Hub"
+      },
+      {
+        "id": "H-T06",
+        "origin": "H_ITO",
+        "destination": "WH6",
+        "units": 8,
+        "speed_kmph": 25,
+        "od": "Hub-Noida"
+      },
+      {
+        "id": "H-T07",
+        "origin": "WH7",
+        "destination": "H_ITO",
+        "units": 8,
+        "speed_kmph": 24,
+        "od": "Gurugram-Hub"
+      },
+      {
+        "id": "H-T08",
+        "origin": "H_ITO",
+        "destination": "WH1",
+        "units": 7,
+        "speed_kmph": 26,
+        "od": "Hub-Kapashera"
+      },
+      {
+        "id": "H-T09",
+        "origin": "H_ITO",
+        "destination": "WH2",
+        "units": 7,
+        "speed_kmph": 27,
+        "od": "Hub-Narela"
+      },
+      {
+        "id": "H-T10",
+        "origin": "WH3",
+        "destination": "H_ITO",
+        "units": 8,
+        "speed_kmph": 25,
+        "od": "Ghazipur-Hub"
+      }
+    ],
+    "commentary": {
+      "static": "Hub Addition: ITO / Pragati Maidan becomes a neutral consolidation point for cross-city transfer and mid-day balancing."
+    }
+  },
+  "city": {
+    "proposal": {
+      "policies": {
+        "use_hub": true,
+        "hubs": [
+          "H_DWK"
+        ],
+        "hub_dwell_min": 14,
+        "consolidation_window_min": 10,
+        "capacity_units": 10,
+        "default_speed_kmph": 24
+      },
+      "warehouses": [
+        {
+          "id": "Z_DWK",
+          "location": "Dwarka Sector 21",
+          "inventory": 155
+        },
+        {
+          "id": "Z_PLM",
+          "location": "Palam / Aerocity",
+          "inventory": 145
+        },
+        {
+          "id": "Z_JNP",
+          "location": "Janakpuri",
+          "inventory": 158
+        },
+        {
+          "id": "Z_RHN",
+          "location": "Rohini Sector 18",
+          "inventory": 132
+        },
+        {
+          "id": "Z_CHN",
+          "location": "Chandni Chowk",
+          "inventory": 152
+        },
+        {
+          "id": "Z_VKJ",
+          "location": "Vasant Kunj",
+          "inventory": 138
+        },
+        {
+          "id": "H_DWK",
+          "location": "Dwarka West Micro-Fulfilment Hub",
+          "inventory": 110,
+          "type": "hub"
+        }
+      ],
+      "trucks": [
+        {
+          "id": "CP1",
+          "origin": "WH1",
+          "destination": "H_DWK",
+          "units": 9,
+          "speed_kmph": 24,
+          "od": "Kapashera-DwarkaHub"
+        },
+        {
+          "id": "CP2",
+          "origin": "H_DWK",
+          "destination": "Z_DWK",
+          "units": 8,
+          "speed_kmph": 22,
+          "od": "DwarkaHub-Dwarka"
+        },
+        {
+          "id": "CP3",
+          "origin": "H_DWK",
+          "destination": "Z_PLM",
+          "units": 8,
+          "speed_kmph": 22,
+          "od": "DwarkaHub-Palam"
+        },
+        {
+          "id": "CP4",
+          "origin": "H_DWK",
+          "destination": "Z_JNP",
+          "units": 8,
+          "speed_kmph": 23,
+          "od": "DwarkaHub-Janakpuri"
+        },
+        {
+          "id": "CP5",
+          "origin": "H_DWK",
+          "destination": "Z_VKJ",
+          "units": 8,
+          "speed_kmph": 23,
+          "od": "DwarkaHub-VasantKunj"
+        },
+        {
+          "id": "CP6",
+          "origin": "WH5",
+          "destination": "Z_RHN",
+          "units": 5,
+          "speed_kmph": 25,
+          "od": "CP-Rohini"
+        },
+        {
+          "id": "CP7",
+          "origin": "WH5",
+          "destination": "Z_CHN",
+          "units": 5,
+          "speed_kmph": 20,
+          "od": "CP-Chandni"
+        }
+      ],
+      "commentary": {
+        "static": "City Addition proposal: add Dwarka West micro-hub and split new micro-zones by density and travel-time bands."
+      }
+    }
+  }
+}
